@@ -12,8 +12,9 @@ import 'package:pizza_user_app/widget_utils/navigation.dart';
 
 class MapHomePage extends StatefulWidget {
   final int distanceRange;
+  final String search;
 
-  MapHomePage(this.distanceRange);
+  MapHomePage(this.distanceRange, this.search);
 
   @override
   MapHomePageState createState() => MapHomePageState();
@@ -25,6 +26,7 @@ class MapHomePageState extends State<MapHomePage> {
   displayShopDetails() async {
     return Firestore.instance
         .collection('shopDetails')
+    .where('pizzaShopName', isEqualTo: widget.search)
         .orderBy('rating')
         .snapshots();
   }
@@ -58,7 +60,7 @@ class MapHomePageState extends State<MapHomePage> {
     displayShopDetails().then((val) {
       val.listen((QuerySnapshot val) {
         val.documents.forEach((element) {
-
+print(element.data);
           if (countDistance(element.data['location']['lat'],
                   element.data['location']['long'], _lat, _lng) <=
               widget.distanceRange) {
